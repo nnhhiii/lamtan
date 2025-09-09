@@ -14,25 +14,33 @@ const ProductList = ({ products: externalProducts }) => {
   const productsPerPage = isHome ? 8 : 20;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (externalProducts && externalProducts.length > 0) {
-          setProducts(externalProducts);
-        } else {
-          const data = await getProducts();
-          setProducts(data); 
-        }
-        setCurrentPage(1); // reset khi đổi danh sách
-      } catch (err) {
-        console.error("Lỗi khi load sản phẩm:", err);
-        setProducts([]);
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      let dataToUse = [];
+      if (externalProducts && externalProducts.length > 0) {
+        dataToUse = externalProducts;
+      } else {
+        const data = await getProducts();
+        dataToUse = data;
       }
-    };
 
-    fetchData();
-  }, [externalProducts]);
+      if (isHome) {
+        // Sắp xếp theo quantitySold giảm dần
+        dataToUse.sort((a, b) => b.quantitySold - a.quantitySold);
+      }
+
+      setProducts(dataToUse);
+      setCurrentPage(1); // reset khi đổi danh sách
+    } catch (err) {
+      console.error("Lỗi khi load sản phẩm:", err);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [externalProducts, isHome]);
 
   if (loading) {
     return <Box sx={{ textAlign: "center", mt: 5 }}>Đang tải...</Box>;

@@ -8,22 +8,30 @@ import {
     ReferenceField,
     FunctionField,
     SelectInput,
-    ReferenceInput,
+    TextInput,
     ChipField, Edit,
-    SimpleForm, BooleanField, SelectField
+    SimpleForm, BooleanField, SelectField,
+    Filter
 } from 'react-admin';
 import { Box, Typography, Divider } from "@mui/material";
 
-const orderFilters = [
-    <ReferenceInput
-        label="Người dùng"
-        source="user"
-        reference="users"
-        alwaysOn
-    >
-        <SelectInput optionText="username" />
-    </ReferenceInput>
-];
+const OrderFilter = (props) => (
+    <Filter {...props}>
+        <TextInput label="Tìm kiếm mã đơn hàng" source="q" alwaysOn />
+        <SelectInput
+            label="Trạng thái đơn hàng"
+            source="status"
+            choices={[
+                { id: 'pending', name: 'Chờ xử lý' },
+                { id: 'confirmed', name: 'Đã xác nhận' },
+                { id: 'shipping', name: 'Đang giao' },
+                { id: 'delivered', name: 'Đã giao' },
+                { id: 'cancelled', name: 'Đã huỷ' },
+            ]}
+            alwaysOn
+        />
+    </Filter>
+);
 
 const paymentMethodChoices = [
     { id: 'cash_on_delivery', name: 'Thanh toán khi nhận hàng' },
@@ -50,7 +58,7 @@ const orderStatusChoices = [
 
 // Hiển thị danh sách đơn hàng
 export const OrderList = (props) => (
-    <List filters={orderFilters} {...props}>
+    <List filters={<OrderFilter />} {...props}>
         <Datagrid rowClick="edit">
             <TextField source="id" label="Mã đơn hàng" />
             {/* User đặt đơn */}
