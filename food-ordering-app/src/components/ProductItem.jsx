@@ -90,7 +90,7 @@ const ProductItem = ({ product }) => {
               )}
             </Box>
 
-            {product?.discount != 0 && (
+            {product?.discount !== 0 && (
               <Typography
                 sx={{
                   fontWeight: 550,

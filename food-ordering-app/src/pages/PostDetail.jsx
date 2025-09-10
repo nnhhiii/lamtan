@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link as RouterLink } from "react-router-dom";
-import {
-    Box,
-    Typography,
-    Button,
-    Container,
-    Card,
-    CardMedia,
-    CardContent,
-} from "@mui/material";
+import { Box, Typography, Button, Container } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { getPost } from "../api/api";
 import Loading from "../components/Loading";

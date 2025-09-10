@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getPosts } from '../api/api';
 import PostItem from './PostItem';
 import Slider from 'react-slick';

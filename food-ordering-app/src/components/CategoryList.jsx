@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getCategories } from '../api/api';
 import CategoryItem from './CategoryItem';
 import Slider from 'react-slick';

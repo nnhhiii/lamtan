@@ -51,7 +51,7 @@ const ProductDetail = ({ showSnackbar }) => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, showSnackbar]);
 
   const onAddToCart = async (productId, variantId = null, quantity = 1) => {
     try {

@@ -87,7 +87,7 @@ const CheckoutItem = ({ item }) => {
                             <Typography sx={{ fontSize: '14px', color: 'text.secondary' }}>{item?.variantData?.name}</Typography>
                         </Box>
 
-                        <Box sx={{ display: 'flex', display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
                             <Typography sx={{ fontWeight: 550, fontSize: '16px', color: 'text.primary', mr: 2 }}>
                                 {finalPrice.toLocaleString('vi-VN')} đ
                             </Typography>

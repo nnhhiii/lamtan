@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { Box, TextField, Button, Typography, Link, Snackbar, Alert } from "@mui/material";
+import { Box, TextField, Button, Typography, Link } from "@mui/material";
 import { userRegister } from '../../api/api';
 import ROUTES from '../../routes';
 import Loading from '../../components/Loading';

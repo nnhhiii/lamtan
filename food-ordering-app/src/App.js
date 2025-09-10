@@ -9,7 +9,7 @@ import ProductDetail from './pages/ProductDetailPage';
 import ProductsPage from './pages/ProductsPage';
 import ProfilePage from './pages/ProfilePage';
 import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
+import Logup from './pages/auth/Logup';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import ResetPassword from "./pages/auth/ResetPassword";
 import Logout from './pages/auth/Logout';
@@ -129,7 +129,7 @@ function AppContent() {
         />
 
         <Route path={ROUTES.LOGIN} element={<Login showSnackbar={showSnackbar} />} />
-        <Route path={ROUTES.REGISTER} element={<Register showSnackbar={showSnackbar} />} />
+        <Route path={ROUTES.Logup} element={<Logup showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.FORGOTPASSWORD} element={<ForgotPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.LOGOUT} element={<Logout showSnackbar={showSnackbar} />} />

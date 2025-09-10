@@ -50,7 +50,7 @@ const OrderDetail = ({ showSnackbar }) => {
             }
         };
         fetchOrder();
-    }, [id]);
+    }, [id, showSnackbar]);
 
     if (loading) {
         return (

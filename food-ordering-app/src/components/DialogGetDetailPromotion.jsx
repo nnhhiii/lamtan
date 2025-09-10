@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Box, Typography, Dialog, DialogTitle, DialogContent } from "@mui/material";
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutlined';
 import { getCategories } from "../api/api";
 import Loading from "./Loading";
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';

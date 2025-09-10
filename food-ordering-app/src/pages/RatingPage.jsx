@@ -1,5 +1,5 @@
 // src/pages/RatingPage.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
     Container,
@@ -51,7 +51,7 @@ export default function RatingPage({ showSnackbar }) {
             }
         };
         fetchOrder();
-    }, [orderId]);
+    }, [orderId, showSnackbar]);
 
     const handleImageChange = (productId, files) => {
         setRatings((prev) => ({

@@ -30,7 +30,7 @@ const PositionsPage = ({ showSnackbar }) => {
             }
         };
         fetchData();
-    }, []);
+    }, [showSnackbar]);
 
     useEffect(() => {
         if (!searchTerm.trim()) {

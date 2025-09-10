@@ -33,7 +33,7 @@ export default function OrdersPage({ showSnackbar }) {
             }
         };
         fetchOrders();
-    }, [tab]);
+    }, [tab, showSnackbar]);
 
     const getStatusLabel = (status) => {
         const tab = ORDER_TABS.find((t) => t.key === status);

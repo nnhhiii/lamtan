@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Typography, Box, Button, Checkbox, Snackbar, Alert } from "@mui/material";
 import { getCarts, updateCartItem, deleteCartItem, getPromotions } from "../api/api";
 import CartList from "../components/CartList";
@@ -69,6 +69,69 @@ const CartPage = () => {
         return sum + finalPrice * item.quantity;
     }, 0);
 
+        // Hàm tính giá trị giảm thực tế
+    const calculateDiscount = (tier, total) => {
+        if (!tier) return 0;
+        let discount = 0;
+
+        if (tier.discountType === "percentage") {
+            discount = (total * tier.discountValue) / 100;
+            if (tier.maxDiscountValue) {
+                discount = Math.min(discount, tier.maxDiscountValue);
+            }
+        } else if (tier.discountType === "fixed") {
+            discount = tier.discountValue;
+        }
+
+        return discount;
+    };
+
+    const checkPromotion = useCallback((promotion, selectedItems, total, maxDiscountAcrossPromotions) => {
+        let score = 0;
+
+        if (!selectedItems || selectedItems.length === 0) {
+            return 0;
+        }
+
+        let discountAmount = 0;
+
+        // ---- Điều kiện tiers
+        if (promotion.tiers && promotion.tiers.length > 0) {
+            const validTier = promotion.tiers
+                .filter(tier => total >= (tier.minOrderValue || 0))
+                .sort((a, b) => b.minOrderValue - a.minOrderValue)[0];
+
+            if (validTier) {
+                discountAmount = calculateDiscount(validTier, total);
+                score++
+                // Nếu là giá trị giảm cao nhất → cộng thêm điểm
+                if (discountAmount === maxDiscountAcrossPromotions) {
+                    score++;
+                }
+            } else {
+                return -1;
+            }
+        }
+
+        // ---- Điều kiện categories
+        if (promotion.categories && promotion.categories.length > 0) {
+            const hasCategory = selectedItems.some(item =>
+                item?.product?.category &&
+                promotion.categories.some(catId => String(catId) === String(item.product.category))
+            );
+            if (!hasCategory) {
+                return -1;
+            }
+            score++;
+        }
+
+        // ---- Điều kiện usageLimit
+        if ((promotion.usageLimit || 0) > (promotion.usedCount || 0)) {
+            score++;
+        }
+
+        return score;
+    }, []);
 
     // 2. Tính bestPromotion mỗi khi giỏ hàng / chọn / promotion thay đổi
     useEffect(() => {
@@ -99,9 +162,7 @@ const CartPage = () => {
 
         setMaxDiscountAcrossPromotions(Math.max(...discounts, 0));
         setBestPromotion(best);
-    }, [selected, carts, promotions, total]);
-
-
+    }, [selected, carts, promotions, total, checkPromotion]);
 
     // toggle chọn tất cả
     const handleToggleAll = (checked) => {
@@ -153,69 +214,6 @@ const CartPage = () => {
         }
     };
 
-    // Hàm tính giá trị giảm thực tế
-    const calculateDiscount = (tier, total) => {
-        if (!tier) return 0;
-        let discount = 0;
-
-        if (tier.discountType === "percentage") {
-            discount = (total * tier.discountValue) / 100;
-            if (tier.maxDiscountValue) {
-                discount = Math.min(discount, tier.maxDiscountValue);
-            }
-        } else if (tier.discountType === "fixed") {
-            discount = tier.discountValue;
-        }
-
-        return discount;
-    };
-
-    const checkPromotion = (promotion, selectedItems, total, maxDiscountAcrossPromotions) => {
-        let score = 0;
-
-        if (!selectedItems || selectedItems.length === 0) {
-            return 0;
-        }
-
-        let discountAmount = 0;
-
-        // ---- Điều kiện tiers
-        if (promotion.tiers && promotion.tiers.length > 0) {
-            const validTier = promotion.tiers
-                .filter(tier => total >= (tier.minOrderValue || 0))
-                .sort((a, b) => b.minOrderValue - a.minOrderValue)[0];
-
-            if (validTier) {
-                discountAmount = calculateDiscount(validTier, total);
-                score++
-                // Nếu là giá trị giảm cao nhất → cộng thêm điểm
-                if (discountAmount === maxDiscountAcrossPromotions) {
-                    score++;
-                }
-            } else {
-                return -1;
-            }
-        }
-
-        // ---- Điều kiện categories
-        if (promotion.categories && promotion.categories.length > 0) {
-            const hasCategory = selectedItems.some(item =>
-                item?.product?.category &&
-                promotion.categories.some(catId => String(catId) === String(item.product.category))
-            );
-            if (!hasCategory) {
-                return -1;
-            }
-            score++;
-        }
-
-        // ---- Điều kiện usageLimit
-        if ((promotion.usageLimit || 0) > (promotion.usedCount || 0)) {
-            score++;
-        }
-
-        return score;
-    };
 
     const discountValue = appliedDiscount ? calculateDiscount(appliedDiscount.tier, total) : 0;
     const shippingValue = appliedShipping ? calculateDiscount(appliedShipping.tier, total) : 0;

@@ -1,7 +1,7 @@
 // src/pages/OrderSuccess.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { getOrderDetail } from "../api/api";
 import ROUTES from '../routes';
@@ -25,7 +25,7 @@ const OrderSuccess = ({ showSnackbar }) => {
         };
 
         fetchOrder();
-    }, [id]);
+    }, [id, showSnackbar]);
 
     if (loading) {
         return (

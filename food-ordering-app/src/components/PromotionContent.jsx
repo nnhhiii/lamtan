@@ -2,7 +2,6 @@ import { Typography, Box } from "@mui/material";
 import DialogGetDetailPromotion from "./DialogGetDetailPromotion";
 import ROUTES from '../routes';
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 const PromotionContent = ({ bestPromotion, total, onApplyPromotion, inDialog = false, score, applied }) => {
     const navigate = useNavigate();

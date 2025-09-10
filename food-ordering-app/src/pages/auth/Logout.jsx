@@ -23,7 +23,7 @@ const Logout = ({ showSnackbar }) => {
     };
 
     logout();
-  }, [navigate]);
+  }, [navigate, showSnackbar]);
 
   if (loading) {
     return (

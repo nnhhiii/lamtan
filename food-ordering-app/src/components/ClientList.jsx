@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getClients } from '../api/api';
 import ClientItem from './ClientItem';
 import { Box, Button } from '@mui/material';

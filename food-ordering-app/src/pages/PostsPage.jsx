@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Box, Pagination, Typography, InputAdornment, TextField, Container } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Typography, InputAdornment, TextField } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { getPostCategories, getPostCategory, getPosts, getPostsByCategoryId } from "../api/api";
 import Loading from "../components/Loading";
@@ -47,7 +47,7 @@ const PostsPage = ({ showSnackbar }) => {
             }
         };
         fetchData();
-    }, [id]);
+    }, [id, showSnackbar]);
 
 
     // 🔍 filter theo searchTerm

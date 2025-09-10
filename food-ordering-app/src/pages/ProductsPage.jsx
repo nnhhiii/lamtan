@@ -46,7 +46,7 @@ const ProductsPage = ({ showSnackbar }) => {
             }
         };
         fetchData();
-    }, [id]);
+    }, [id, showSnackbar]);
 
     useEffect(() => {
         if (!searchTerm.trim()) {

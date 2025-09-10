@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getPartners } from '../api/api';
 import PartnerItem from './PartnerItem';
 import { Box, Button } from '@mui/material';

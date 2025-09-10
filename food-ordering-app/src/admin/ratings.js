@@ -7,14 +7,11 @@ import {
     Edit,
     SimpleForm,
     TextInput,
-    Create,
     SelectInput,
     DateField,
     ReferenceInput,
     FunctionField,
-    NumberInput,
     NumberField,
-    SelectField
 } from 'react-admin';
 
 const ratingFilters = [
