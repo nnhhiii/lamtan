@@ -59,3 +59,12 @@ app.use((req, res, next) => {
 app.listen(process.env.PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${process.env.PORT}`);
 });
+
+//=======TINOHOST=====
+// ❌ Không dùng app.listen nữa
+// app.listen(process.env.PORT, '0.0.0.0', () => {
+//   console.log(`🚀 Server running on port ${process.env.PORT}`);
+// });
+
+// ✅ Export app để Passenger tự chạy
+// module.exports = app;

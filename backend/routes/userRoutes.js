@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const cloudinary = require('../cloudinaryConfig'); // Import cấu hình Cloudinary
 const upload = require('../uploadConfig'); // Import cấu hình Multer
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 // Lấy danh sách tất cả người dùng

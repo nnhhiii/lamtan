@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserAdmin = require('../models/UserAdmin');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // Lấy danh sách tất cả người dùng
 router.get('/', async (req, res) => {

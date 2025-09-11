@@ -12,7 +12,7 @@ const ROUTES = {
   CONTACT: '/contact',
   LOGIN: '/login',
   LOGOUT: '/logout',
-  REGISTER: '/register',
+  REGISTER: '/logup',
   FORGOTPASSWORD: '/forgot-password',
   RESETPASSWORD: '/reset-password',
   ADMIN: '/admin/*',

@@ -129,7 +129,7 @@ function AppContent() {
         />
 
         <Route path={ROUTES.LOGIN} element={<Login showSnackbar={showSnackbar} />} />
-        <Route path={ROUTES.Logup} element={<Logup showSnackbar={showSnackbar} />} />
+        <Route path={ROUTES.REGISTER} element={<Logup showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.FORGOTPASSWORD} element={<ForgotPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.LOGOUT} element={<Logout showSnackbar={showSnackbar} />} />

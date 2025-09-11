@@ -6,7 +6,7 @@ import { userRegister } from '../../api/api';
 import ROUTES from '../../routes';
 import Loading from '../../components/Loading';
 
-const Register = ({ showSnackbar }) => {
+const Logup = ({ showSnackbar }) => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -57,4 +57,4 @@ const Register = ({ showSnackbar }) => {
   );
 };
 
-export default Register;
+export default Logup;
