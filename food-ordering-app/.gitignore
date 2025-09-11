@@ -9,7 +9,7 @@
 /coverage
 
 # Node.js environment
-.env
+.env.production
 
 # production
 /build
