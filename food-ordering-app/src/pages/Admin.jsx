@@ -242,6 +242,7 @@ const authProvider = {
     login: async ({ username, password }) => {
         try {
             await adminLogin({ username, password });
+            return Promise.resolve();
         } catch (error) {
             throw new Error(
                 error.response?.data?.message || "Đăng nhập thất bại, vui lòng thử lại!"
@@ -261,11 +262,13 @@ const authProvider = {
     },
 
     checkError: (error) => {
-        if (error.status === 401 || error.status === 403) {
+        const status = error.response?.status;
+        if (status === 401 || status === 403) {
             return Promise.reject("Bạn không có quyền hoặc phiên đăng nhập không hợp lệ!");
         }
         return Promise.resolve();
     },
+
 
     getIdentity: async () => {
         try {
@@ -290,7 +293,7 @@ const authProvider = {
         }
     },
 
-    getPermissions: () => Promise.resolve(""),
+    getPermissions: () => Promise.resolve(),
 };
 
 
