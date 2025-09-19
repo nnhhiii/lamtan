@@ -1,8 +1,8 @@
 const express = require('express');
 const About = require('../models/About');
 const router = express.Router();
-const upload = require('../uploadConfig');
-const cloudinary = require('../cloudinaryConfig');
+const upload = require('../upload/uploadConfig');
+const cloudinary = require('../upload/cloudinaryConfig');
 
 // ✅ Lấy thông tin About (chỉ 1 record, vì About thường là thông tin giới thiệu công ty)
 router.get('/', async (req, res) => {

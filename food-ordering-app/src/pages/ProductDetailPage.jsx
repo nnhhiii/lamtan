@@ -604,26 +604,6 @@ const ProductDetail = ({ showSnackbar }) => {
                       {r.comment}
                     </Typography>
                   )}
-
-                  {/* Hình ảnh đính kèm */}
-                  {/* {r.images && r.images.length > 0 && (
-                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                      {r.images.map((img, i) => (
-                        <Box
-                          key={i}
-                          component="img"
-                          src={img}
-                          alt={`rating-img-${i}`}
-                          sx={{
-                            width: 80,
-                            height: 80,
-                            objectFit: 'cover',
-                            borderRadius: 1
-                          }}
-                        />
-                      ))}
-                    </Box>
-                  )} */}
                   <DialogReviewImage images={r.images} />
                 </Box>
               ))

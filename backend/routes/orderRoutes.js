@@ -2,6 +2,8 @@ const express = require("express");
 const Order = require("../models/Order");
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
+const User = require("../models/User");
+const checkToken = require("../checkToken");
 const router = express.Router();
 
 
@@ -45,13 +47,10 @@ router.get('/', async (req, res) => {
 
 
 // Lấy tất cả đơn hàng của user (lọc theo status nếu có)
-router.get("/user", async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Vui lòng đăng nhập!" });
-    }
+router.get("/user", checkToken, async (req, res) => {
 
     try {
-        const userId = req.session.user._id;
+        const userId = req.user.id;
         const { status } = req.query;
 
         let filter = { user: userId };
@@ -75,15 +74,12 @@ router.get("/user", async (req, res) => {
 });
 
 // Lấy chi tiết 1 đơn hàng của user
-router.get("/user/:id", async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Vui lòng đăng nhập!" });
-    }
+router.get("/user/:id", checkToken, async (req, res) => {
 
     try {
         const order = await Order.findOne({
             _id: req.params.id,
-            user: req.session.user._id  // chỉ lấy order của chính user này
+            user: req.user.id  // chỉ lấy order của chính user này
         }).populate('items.product');
 
         if (!order) {
@@ -111,16 +107,17 @@ router.get("/:id", async (req, res) => {
 
 
 // Checkout: Tạo đơn hàng từ giỏ hàng
-router.post("/checkout", async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Vui lòng đăng nhập!" });
-    }
+router.post("/checkout", checkToken, async (req, res) => {
 
     try {
-        const userId = req.session.user._id;
-        const shippingAddress = req.session.user.address;
-        const phoneNumber = req.session.user.phone;
-        if (!phoneNumber || phoneNumber.trim() === "" || !shippingAddress || shippingAddress.trim() === "") {
+        const userId = req.user.id;
+        const user = await User.findById(userId).select("address addressDetail phone");
+        if (!user) return res.status(404).json({ message: "Không tìm thấy người dùng." });
+        const phone = user.phone;
+        const address = user.address;
+        const addressDetail = user.addressDetail;
+
+        if (!phone || phone.trim() === "" || !address || address.trim() === ""|| !addressDetail || addressDetail.trim() === "") {
             return res.status(400).json({ message: "Vui lòng cập nhật đầy đủ thông tin giao hàng trước khi thanh toán." });
         }
         const { selectedItems, totalPrice, paymentMethod, note } = req.body;
@@ -167,7 +164,9 @@ router.post("/checkout", async (req, res) => {
             items: orderItems,
             totalPrice,
             paymentMethod,
-            shippingAddress,
+            shippingAddress: address,
+            shippingAddressDetail: addressDetail,
+            phoneNumber: phone,
             note,
             paymentStatus: "pending",
             orderStatus: "pending",
@@ -179,7 +178,7 @@ router.post("/checkout", async (req, res) => {
         cart.items = cart.items.filter(i => !selectedItems.includes(i._id.toString()));
         await cart.save();
 
-        res.json({ message: 'Đặt hàng thành công!', newOrder });
+        res.json(newOrder);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -275,15 +274,15 @@ router.put("/cancelOrder/:id", async (req, res) => {
 
 
 // Xoá đơn hàng
-// router.delete("/:id", async (req, res) => {
-//     try {
-//         const deleted = await Order.findByIdAndDelete(req.params.id);
-//         if (!deleted) return res.status(404).json({ message: "Order not found" });
+router.delete("/:id", async (req, res) => {
+    try {
+        const deleted = await Order.findByIdAndDelete(req.params.id);
+        if (!deleted) return res.status(404).json({ message: "Order not found" });
 
-//         res.json({ message: "Order deleted successfully" });
-//     } catch (err) {
-//         res.status(500).json({ message: err.message });
-//     }
-// });
+        res.json({ message: "Order deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
 
 module.exports = router;

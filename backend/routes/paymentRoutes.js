@@ -13,7 +13,7 @@ router.post("/", async (req, res) => {
         const secretKey = process.env.MOMO_SECRET_KEY;
         const partnerCode = process.env.MOMO_PARTNER_CODE;
         const accessKey = process.env.MOMO_ACCESS_KEY;
-        const redirectUrl = `${process.env.FRONTEND_URL}/payment`;
+        const redirectUrl = `${process.env.FRONTEND_USER_URL}/payment`;
         const ipnUrl = `${process.env.BACKEND_URL}/api/payment/callback`;
 
         const rawSignature =

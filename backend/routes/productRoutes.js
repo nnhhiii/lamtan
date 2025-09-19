@@ -1,8 +1,8 @@
 const express = require('express');
 const Product = require('../models/Product');
 const router = express.Router();
-const upload = require('../uploadConfig');
-const cloudinary = require('../cloudinaryConfig');
+const upload = require('../upload/uploadConfig');
+const cloudinary = require('../upload/cloudinaryConfig');
 
 // Lấy danh sách sản phẩm với phân trang, sắp xếp
 router.get('/', async (req, res) => {

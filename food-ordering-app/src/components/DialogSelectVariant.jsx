@@ -4,6 +4,7 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import RemoveRoundedIcon from "@mui/icons-material/RemoveRounded";
 import { useNavigate } from "react-router-dom";
 import ROUTES from "../routes";
+import { addToCart } from "../api/api";
 
 const DialogSelectVariant = ({ product, onAddToCart, mode = "addToCart" }) => {
     const [openDialog, setOpenDialog] = useState(false);
@@ -12,7 +13,7 @@ const DialogSelectVariant = ({ product, onAddToCart, mode = "addToCart" }) => {
     const [snackbar, setSnackbar] = useState({ open: false, message: "" });
     const navigate = useNavigate();
 
-    const handleClickOpen = () => {
+    const handleClickOpen = async () => {
         if (product?.variants?.length) {
             setOpenDialog(true);
         } else {
@@ -20,31 +21,22 @@ const DialogSelectVariant = ({ product, onAddToCart, mode = "addToCart" }) => {
                 onAddToCart(product?.id, null, 1);
             } else {
                 // Mua ngay không có variant
-                const quantity = 1;
-                const price = product?.price || 0;
-                const total = price * quantity;
+                const productId = product?.id;
+                const res = await addToCart({ productId, variantId: null, quantity: 1 });
 
-                navigate(ROUTES.CHECKOUT, {
-                    state: {
-                        selectedItems: [{
-                            product,
-                            variantData: null,
-                            quantity
-                        }],
-                        appliedDiscount: null,
-                        appliedShipping: null,
-                        total,
-                        discountValue: 0,
-                        shippingValue: 0,
-                        finalTotalPrice: total
-                    }
+                // Lấy id của item vừa thêm 
+                const addedItemId = res?.cart.items?.slice(-1)[0]?._id;
+
+                // Truyền id để tick sẵn
+                navigate(ROUTES.CART, {
+                    state: { preselected: [addedItemId] }
                 });
             }
         }
     };
 
-    const handleConfirm = () => {
-        if (!selectedVariant) {
+    const handleConfirm = async () => {
+        if (!selectedVariant && product?.variants?.length > 0) {
             setSnackbar({ open: true, message: "Vui lòng chọn loại sản phẩm" });
             return;
         }
@@ -54,28 +46,21 @@ const DialogSelectVariant = ({ product, onAddToCart, mode = "addToCart" }) => {
         }
 
         if (mode === "addToCart") {
-            // Thêm vào giỏ hàng
             onAddToCart(product?.id, selectedVariant?._id, quantity);
         } else {
-            // Mua ngay → navigate thẳng checkout
-            const price = selectedVariant?.price || product?.price || 0;
-            const total = price * quantity;
+            try {
+                const productId = product?.id;
+                const variantId = selectedVariant?._id || null;
+                const res = await addToCart({ productId, variantId, quantity });
 
-            navigate(ROUTES.CHECKOUT, {
-                state: {
-                    selectedItems: [{
-                        product,
-                        variantData: selectedVariant,
-                        quantity
-                    }],
-                    appliedDiscount: null,
-                    appliedShipping: null,
-                    total,
-                    discountValue: 0,
-                    shippingValue: 0,
-                    finalTotalPrice: total
-                }
-            });
+                const addedItemId = res?.cart?.items?.slice(-1)[0]?._id;
+
+                navigate(ROUTES.CART, {
+                    state: { preselected: [addedItemId] }
+                });
+            } catch (err) {
+                console.error("Lỗi khi Buy Now:", err);
+            }
         }
 
         setOpenDialog(false);
@@ -83,13 +68,12 @@ const DialogSelectVariant = ({ product, onAddToCart, mode = "addToCart" }) => {
         setQuantity(1);
     };
 
-
     return (
         <>
             <Button
                 variant={mode === "addToCart" ? "outlined" : "contained"}
                 onClick={handleClickOpen}
-                sx={{ p: {xs:3, md:2}, borderRadius:{xs:'0', md:1} }}
+                sx={{ p: { xs: 3, md: 2 }, borderRadius: { xs: '0', md: 1 } }}
             >
                 {mode === "addToCart" ? "Thêm vào giỏ hàng" : "Mua ngay"}
             </Button>

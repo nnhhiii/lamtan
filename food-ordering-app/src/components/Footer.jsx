@@ -10,11 +10,11 @@ const navItems = [
     { label: 'Tuyển dụng', path: ROUTES.POSITIONS },
 ];
 const navItem1s = [
-    { label: 'Chính sách bán hàng', path: ROUTES.HOME },
-    { label: 'Chính sách thanh toán', path: ROUTES.HOME },
-    { label: 'Chính sách đổi trả', path: ROUTES.HOME },
-    { label: 'Chính sách vận chuyển', path: ROUTES.HOME },
-    { label: 'Chính sách bảo mật', path: ROUTES.HOME },
+    { label: 'Chính sách bán hàng', path: "#1" },
+    { label: 'Chính sách thanh toán', path: "#2" },
+    { label: 'Chính sách đổi trả', path: "#3" },
+    { label: 'Chính sách vận chuyển', path: "#4" },
+    { label: 'Chính sách bảo mật', path: "#5" },
 ];
 
 const Footer = ({ aboutData }) => {

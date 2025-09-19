@@ -2,7 +2,7 @@ const express = require('express');
 const Recruit = require('../models/Recruit');
 const router = express.Router();
 const multer = require("multer");
-const uploadToSupabase = require("../uploadSupabase");
+const uploadToSupabase = require("../upload/uploadSupabase");
 const upload = multer({ storage: multer.memoryStorage() }); // lưu file trong RAM
 
 // Lấy danh sách ứng viên (phân trang, tìm kiếm theo tên/email)

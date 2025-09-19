@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ROUTES from '../../routes';
 import Loading from '../../components/Loading';
-import { Box} from "@mui/material";
+import { Box } from "@mui/material";
 import { userLogout } from '../../api/api';
 
 const Logout = ({ showSnackbar }) => {
@@ -27,10 +27,11 @@ const Logout = ({ showSnackbar }) => {
 
   if (loading) {
     return (
-    <Box sx={{ m: { xs: '120px 0', md: '150px 0' }, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Loading/>
+      <Box sx={{ m: { xs: '120px 0', md: '150px 0' }, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Loading />
       </Box>
-  )}
+    )
+  }
 
   return null;
 };

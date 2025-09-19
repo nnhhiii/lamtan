@@ -4,9 +4,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const ReviewImages = ({ images }) => {
+const ReviewImages = ({ images = [] }) => {
   const [open, setOpen] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+
+   if (!images || images.length === 0) {
+    return null; // không render gì nếu không có ảnh
+  }
 
   const handleOpen = (index) => {
     setCurrentIndex(index);

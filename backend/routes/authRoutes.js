@@ -3,8 +3,22 @@ const router = express.Router();
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const checkToken = require('../checkToken');
 require('dotenv').config();
+
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+
+// === Helper: Tạo token ===
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    JWT_SECRET,
+    { expiresIn: "7d" } // token sống 7 ngày
+  );
+};
+
 
 // === GOOGLE LOGIN ===
 router.get('/google', passport.authenticate('google', {
@@ -14,10 +28,9 @@ router.get('/google', passport.authenticate('google', {
 router.get('/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   (req, res) => {
-    req.session.user = req.user;
-    req.session.save(() => {
-      res.redirect(process.env.FRONTEND_URL);
-    });
+    const token = generateToken(req.user);
+    // Redirect về frontend kèm token
+    res.redirect(`${process.env.FRONTEND_USER_URL}/google-success?token=${token}`);
   }
 );
 
@@ -52,30 +65,31 @@ router.post('/login', async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return res.status(401).json({ message: 'Mật khẩu không chính xác!' });
 
-    req.session.user = user;
+    const token = generateToken(user);
 
-    res.status(200).json({ message: 'Đăng nhập thành công!', user: req.session.user });
+    res.status(200).json({
+      message: 'Đăng nhập thành công!',
+      token,
+      role: user.role
+    });
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-// === LOGOUT ===
+// === LOGOUT (JWT không cần xoá server-side, chỉ client xoá token) ===
 router.post('/logout', (req, res) => {
-  delete req.session.user;
-  res.json({ message: 'Đăng xuất thành công!' });
+  res.json({ message: 'Đăng xuất thành công! Hãy xoá token ở client.' });
 });
 
-// === GET PROFILE (session-based) ===
-router.get('/profile', async (req, res) => {
-  if (!req.session.user) return res.status(401).json({ message: 'Not authenticated' });
-
+// === GET PROFILE (JWT) ===
+router.get('/profile', checkToken, async (req, res) => {
   try {
-    const user = await User.findById(req.session.user._id);
+    const user = await User.findById(req.user.id).select("-password");
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    res.json({user});
+    res.json({ user });
   } catch (err) {
     res.status(500).json({ message: 'Internal server error', error: err.message });
   }
@@ -89,7 +103,7 @@ router.post('/forgot-password', async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'Không tìm thấy người dùng! Email không đúng!' });
 
-    const resetToken = Math.random().toString(36).substring(2);
+    const resetToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
     user.resetToken = resetToken;
     await user.save();
 
@@ -101,7 +115,7 @@ router.post('/forgot-password', async (req, res) => {
       },
     });
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    const resetLink = `${process.env.FRONTEND_USER_URL}/reset-password?token=${resetToken}`;
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -121,18 +135,18 @@ router.post('/reset-password', async (req, res) => {
   const { token, newPassword } = req.body;
 
   try {
-    const user = await User.findOne({ resetToken: token, updatedAt: { $gt: Date.now() - 60 * 60 * 1000 }});
-    if (!user) return res.status(404).json({ message: 'Token không hợp lệ hoặc đã hết hạn.' });
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) return res.status(404).json({ message: 'Người dùng không tồn tại.' });
 
     user.password = await bcrypt.hash(newPassword, 10);
-    user.resetToken = '';
-    user.updatedAt = '';
+    user.resetToken = "";
     await user.save();
 
     res.json({ message: 'Đổi mật khẩu thành công!' });
   } catch (error) {
     console.error('Error resetting password:', error);
-    res.status(500).json({ message: 'Something went wrong. Please try again.' });
+    res.status(500).json({ message: 'Token không hợp lệ hoặc đã hết hạn.' });
   }
 });
 

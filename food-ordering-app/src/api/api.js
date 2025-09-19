@@ -1,218 +1,106 @@
-import axios from 'axios';
+import api from "./axiosInstance";
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api`;
+// === PRODUCTS ===
+export const getProducts = async () => (await api.get("/products")).data;
+export const getProductDetail = async (id) => (await api.get(`/products/${id}`)).data;
+export const getProductsByCategoryId = async (id) => (await api.get(`/products/category/${id}`)).data;
 
-export const getProducts = async () => {
-  const response = await axios.get(`${API_URL}/products`);
-  return response.data;
-};
-export const getProductDetail = async (id) => {
-  const response = await axios.get(`${API_URL}/products/${id}`);
-  return response.data;
-};
-export const getProductsByCategoryId = async (id) => {
-  const response = await axios.get(`${API_URL}/products/category/${id}`);
-  return response.data;
-};
+// === CATEGORIES ===
+export const getCategories = async () => (await api.get("/categories")).data;
+export const getCategory = async (id) => (await api.get(`/categories/${id}`)).data;
 
-export const getCategories = async () => {
-  const response = await axios.get(`${API_URL}/categories`);
-  return response.data;
-};
-export const getCategory = async (id) => {
-  const response = await axios.get(`${API_URL}/categories/${id}`);
-  return response.data;
-};
+// === PARTNERS / CLIENTS / ABOUT ===
+export const getPartners = async () => (await api.get("/partners")).data;
+export const getClients = async () => (await api.get("/clients")).data;
+export const getAbout = async () => (await api.get("/about")).data;
 
-export const getPartners = async () => {
-  const response = await axios.get(`${API_URL}/partners`);
-  return response.data;
-};
-export const getClients = async () => {
-  const response = await axios.get(`${API_URL}/clients`);
-  return response.data;
-};
-export const getAbout = async () => {
-  const response = await axios.get(`${API_URL}/about`);
-  return response.data;
-};
-export const getPositions = async () => {
-  const response = await axios.get(`${API_URL}/positions`);
-  return response.data;
-};
-export const getPosition = async (id) => {
-  const response = await axios.get(`${API_URL}/positions/${id}`);
-  return response.data;
-};
-export const createRecruit = async (formData) => {
-  const res = await axios.post(`${API_URL}/recruits`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-    withCredentials: true,
-  });
-  return res.data;
-};
+// === POSITIONS ===
+export const getPositions = async () => (await api.get("/positions")).data;
+export const getPosition = async (id) => (await api.get(`/positions/${id}`)).data;
+export const createRecruit = async (formData) => (await api.post("/recruits", formData, {
+  headers: { "Content-Type": "multipart/form-data" }
+})).data;
 
+// === POST CATEGORIES ===
+export const getPostCategories = async () => (await api.get("/postCategories")).data;
+export const getPostCategory = async (id) => (await api.get(`/postCategories/${id}`)).data;
 
-export const getPostCategories = async () => {
-  const response = await axios.get(`${API_URL}/postCategories`);
-  return response.data;
-};
-export const getPostCategory = async (id) => {
-  const response = await axios.get(`${API_URL}/postCategories/${id}`);
-  return response.data;
-};
+// === POSTS ===
+export const getPosts = async () => (await api.get("/posts")).data;
+export const getPostsByCategoryId = async (id) => (await api.get(`/posts/category/${id}`)).data;
+export const getPost = async (id) => (await api.get(`/posts/${id}`)).data;
 
-
-export const getPosts = async () => {
-  const response = await axios.get(`${API_URL}/posts`);
-  return response.data;
-};
-export const getPostsByCategoryId = async (id) => {
-  const response = await axios.get(`${API_URL}/posts/category/${id}`);
-  return response.data;
-};
-export const getPost = async (id) => {
-  const response = await axios.get(`${API_URL}/posts/${id}`);
-  return response.data;
-};
-
-
-export const getPromotions = async () => {
-  const response = await axios.get(`${API_URL}/promotions`);
-  return response.data;
-};
-
-
+// === PROMOTIONS ===
+export const getPromotions = async () => (await api.get("/promotions")).data;
 
 // === USER CARTS ===
-export const getCarts = async () => {
-  const response = await axios.get(`${API_URL}/carts/getCartByUserId`, { withCredentials: true });
-  return response.data;
-};
-export const addToCart = async ({ productId, variantId = null, quantity }) => {
-  const res = await axios.post(`${API_URL}/carts/addCartByUserId`, { productId, variantId, quantity }, { withCredentials: true });
-  return res.data;
-};
-export const updateCartItem = async (itemId, variantId, quantity) => {
-  const res = await axios.put(`${API_URL}/carts/updateCartByUserId/${itemId}`, { quantity, variantId }, { withCredentials: true });
-  return res.data;
-};
-export const deleteCartItem = async (itemId) => {
-  const res = await axios.delete(`${API_URL}/carts/deleteCartItemByUserId/${itemId}`, { withCredentials: true });
-  return res.data;
-};
-
+export const getCarts = async () => (await api.get("/carts/getCartByUserId")).data;
+export const addToCart = async ({ productId, variantId = null, quantity }) =>
+  (await api.post("/carts/addCartByUserId", { productId, variantId, quantity })).data;
+export const updateCartItem = async (itemId, variantId, quantity) =>
+  (await api.put(`/carts/updateCartByUserId/${itemId}`, { quantity, variantId })).data;
+export const deleteCartItem = async (itemId) =>
+  (await api.delete(`/carts/deleteCartItemByUserId/${itemId}`)).data;
 
 // === USER RATING ===
-export const getRatingsByProductId = async (id) => {
-  const response = await axios.get(`${API_URL}/ratings/product/${id}`);
-  return response.data;
-};
-export const createRating = async (formData) => {
-  const res = await axios.post(`${API_URL}/ratings`, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-    withCredentials: true,
-  });
-  return res.data;
-};
-
-
+export const getRatingsByProductId = async (id) => (await api.get(`/ratings/product/${id}`)).data;
+export const createRating = async (formData) =>
+  (await api.post("/ratings", formData, {
+    headers: { "Content-Type": "multipart/form-data" }
+  })).data;
 
 // === USER PAYMENT ===
-export const checkout = async (data) => {
-  const res = await axios.post(`${API_URL}/orders/checkout`, data, { withCredentials: true });
-  return res.data;
-};
-export const createPayment = async (data) => {
-  const res = await axios.post(`${API_URL}/payment`, data, { withCredentials: true });
-  return res.data;
-};
-export const getOrders = async () => {
-  const response = await axios.get(`${API_URL}/orders/user`, { withCredentials: true });
-  return response.data;
-};
-export const getOrderDetail = async (id) => {
-  const response = await axios.get(`${API_URL}/orders/user/${id}`, { withCredentials: true });
-  return response.data;
-};
-export const cancelOrder = async (id) => {
-  const res = await axios.put(`${API_URL}/orders/cancelOrder/${id}`, {}, { withCredentials: true });
-  return res.data;
-};
-// Lấy đơn hàng theo status (pending, confirmed, shipping, delivered, cancelled, all)
-export const getOrdersByStatus = async (status = "all") => {
-  const res = await axios.get(`${API_URL}/orders/user?status=${status}`, { withCredentials: true });
-  return res.data;
-};
-
-
+export const checkout = async (data) => (await api.post("/orders/checkout", data)).data;
+export const createPayment = async (data) => (await api.post("/payment", data)).data;
+export const getOrders = async () => (await api.get("/orders/user")).data;
+export const getOrderDetail = async (id) => (await api.get(`/orders/user/${id}`)).data;
+export const cancelOrder = async (id) => (await api.put(`/orders/cancelOrder/${id}`)).data;
+export const getOrdersByStatus = async (status = "all") =>
+  (await api.get(`/orders/user?status=${status}`)).data;
 
 // === USER AUTH ===
-export const loginGoogle = () => {
-  return `${API_URL}/auth/google`;
-};
+export const loginGoogle = () => `${api.defaults.baseURL}/auth/google`;
+
 export const userLogin = async (data) => {
-  const response = await axios.post(`${API_URL}/auth/login`, data, { withCredentials: true });
-  return response.data;
+  const res = await api.post("/auth/login", data);
+
+  if (res.data?.token) {
+    if (res.data.role !== "user") {
+      if (res.data.role !== "user") {
+        throw new Error("Đây là tài khoản quản trị viên, vui lòng đăng nhập ở trang admin!");
+      }
+    }
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.role);
+  }
+
+  return res.data;
 };
+
 export const userLogout = async () => {
-  const response = await axios.post(`${API_URL}/auth/logout`, { withCredentials: true });
-  return response.data;
+  localStorage.removeItem("token"); // React Native thì AsyncStorage.removeItem
+  localStorage.removeItem("role");
+  return { message: 'Đăng xuất thành công!' };
 };
+
 export const userRegister = async (data) => {
-  const res = await axios.post(`${API_URL}/auth/register`, data, { withCredentials: true });
-  return res.data;
-};
-export const forgotPassword = async (email) => {
-  const res = await axios.post(`${API_URL}/auth/forgot-password`, { email });
-  return res.data;
-};
-export const resetPassword = async (newPassword, token) => {
-  const res = await axios.post(`${API_URL}/auth/reset-password`, { newPassword, token });
-  return res.data;
-};
-export const getUserInfo = async () => {
-  const res = await axios.get(`${API_URL}/auth/profile`, { withCredentials: true });
-  return res.data;
-};
-export const updateUserInfo = async (formData) => {
-  const res = await axios.patch(`${API_URL}/users`, formData, {
-    withCredentials: true,
-    headers: { "Content-Type": "multipart/form-data" }
-  });
-  return res.data;
-};
-export const getUsers = async () => {
-  const res = await axios.get(`${API_URL}/users`, { withCredentials: true });
-  return res.data;
-};
-export const sendOtp = async (phone) => {
-  const res = await axios.post(`${API_URL}/otp/send-otp`, { phone });
-  return res.data;
-};
-export const verifyOtp = async (phone, otp) => {
-  const res = await axios.post(`${API_URL}/otp/verify-otp`, { phone, otp });
+  const res = await api.post("/auth/register", data);
+  if (res.data?.token) {
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("role", res.data.role);
+  }
   return res.data;
 };
 
+export const forgotPassword = async (email) => (await api.post("/auth/forgot-password", { email })).data;
+export const resetPassword = async (newPassword, token) =>
+  (await api.post("/auth/reset-password", { newPassword, token })).data;
+export const getUserInfo = async () => (await api.get("/auth/profile")).data;
+export const updateUserInfo = async (formData) =>
+  (await api.patch("/users", formData, { headers: { "Content-Type": "multipart/form-data" } })).data;
 
-// ==== USER ADMIN AUTH ====
-export const adminLogin = async ({ username, password }) => {
-  const response = await axios.post(`${API_URL}/useradmins/login`, { username, password }, { withCredentials: true });
-  return response.data;
-};
+export const getUsers = async () => (await api.get("/users")).data;
+export const sendOtp = async (phone) => (await api.post("/otp/send-otp", { phone })).data;
+export const verifyOtp = async (phone, otp) => (await api.post("/otp/verify-otp", { phone, otp })).data;
 
-export const checkAdminSession = async () => {
-  const response = await axios.get(`${API_URL}/useradmins/check-session`, { withCredentials: true });
-  return response.data;
-};
-
-export const getAdminProfile = async () => {
-  const response = await axios.get(`${API_URL}/useradmins/profile`, { withCredentials: true });
-  return response.data;
-};
-
-export const adminLogout = async () => {
-  const response = await axios.post(`${API_URL}/useradmins/logout`, {}, { withCredentials: true });
-  return response.data;
-};

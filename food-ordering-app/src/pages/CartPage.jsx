@@ -8,10 +8,12 @@ import PromotionContent from "../components/PromotionContent";
 import Loading from '../components/Loading';
 import { useNavigate } from "react-router-dom";
 import ROUTES from '../routes';
+import { useLocation } from "react-router-dom";
 
 
 const CartPage = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [carts, setCarts] = useState([]);
     const [promotions, setPromotions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,7 +23,6 @@ const CartPage = () => {
     const [maxDiscountAcrossPromotions, setMaxDiscountAcrossPromotions] = useState(0);
     const [appliedDiscount, setAppliedDiscount] = useState(null);
     const [appliedShipping, setAppliedShipping] = useState(null);
-
 
     // 1. Fetch carts & promotions (chạy 1 lần khi mount)
     useEffect(() => {
@@ -37,6 +38,13 @@ const CartPage = () => {
                 setCarts(filteredCarts);
                 setPromotions(filteredPromotions);
 
+                // Tick sẵn nhưng phải check id có tồn tại trong carts
+                if (location.state?.preselected?.length) {
+                    const validIds = location.state.preselected.filter(id =>
+                        filteredCarts.some(item => item._id === id)
+                    );
+                    setSelected(validIds);
+                }
             } catch (err) {
                 console.error("Lỗi khi lấy giỏ hàng:", err);
                 setOpenSnackbar(true);
@@ -48,7 +56,7 @@ const CartPage = () => {
         };
 
         fetchData();
-    }, []);
+    }, [location.state]);
 
     // tính tổng theo selected
     const total = carts.reduce((sum, item) => {
@@ -69,7 +77,7 @@ const CartPage = () => {
         return sum + finalPrice * item.quantity;
     }, 0);
 
-        // Hàm tính giá trị giảm thực tế
+    // Hàm tính giá trị giảm thực tế
     const calculateDiscount = (tier, total) => {
         if (!tier) return 0;
         let discount = 0;

@@ -2,8 +2,6 @@ import { Routes, Route, BrowserRouter, useLocation } from 'react-router-dom';
 import Home from './pages/HomePage';
 import CheckoutPage from './pages/CheckoutPage';
 import CartPage from './pages/CartPage';
-import AdminPanel from './pages/Admin';
-import AdminGuard from './constants/AdminAuth';
 import Navbar from './components/Navbar';
 import ProductDetail from './pages/ProductDetailPage';
 import ProductsPage from './pages/ProductsPage';
@@ -53,27 +51,21 @@ function AppContent() {
   };
 
   useEffect(() => {
-    // chỉ fetch user khi KHÔNG phải admin route
-    if (!location.pathname.startsWith("/admin")) {
       const fetchData = async () => {
         try {
           const dataUser = await getUserInfo();
           const dataCart = await getCarts();
           setUser(dataUser);
           setCartItemCount(dataCart.items.length);
-
-
         } catch (error) {
           console.error("Lỗi khi lấy userInfo:", error);
           setUser(null);
         }
       };
       fetchData();
-    }
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!location.pathname.startsWith("/admin")) {
       const fetchData = async () => {
         try {
           const dataAbout = await getAbout();
@@ -85,14 +77,12 @@ function AppContent() {
         }
       };
       fetchData();
-    }
-  }, [location.pathname]);
+  }, []);
 
-  const isAdminRoute = location.pathname.startsWith("/admin");
   return (
     <>
-      {!isAdminRoute && <Navbar userData={user} aboutData={about} cartItemCount={cartItemCount} />}
-      {!isAdminRoute && <SideRightBar />}
+      {<Navbar userData={user} aboutData={about} cartItemCount={cartItemCount} />}
+      {<SideRightBar />}
 
       <Routes>
         <Route path={ROUTES.HOME} element={<Home aboutData={about}/>} />
@@ -118,24 +108,14 @@ function AppContent() {
         <Route path={ROUTES.RECRUITSUCCESS} element={<RecruitSuccess showSnackbar={showSnackbar} />} />
         <Route path='*' element={<NotFoundPage />} />
 
-        {/* ✅ bọc admin route bằng AdminGuard */}
-        <Route
-          path="/admin/*"
-          element={
-            <AdminGuard>
-              <AdminPanel />
-            </AdminGuard>
-          }
-        />
-
         <Route path={ROUTES.LOGIN} element={<Login showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.REGISTER} element={<Logup showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.FORGOTPASSWORD} element={<ForgotPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.RESETPASSWORD} element={<ResetPassword showSnackbar={showSnackbar} />} />
         <Route path={ROUTES.LOGOUT} element={<Logout showSnackbar={showSnackbar} />} />
       </Routes>
-
-      {!isAdminRoute && <Footer aboutData={about}/>}
+      {<Footer aboutData={about}/>}
+      
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

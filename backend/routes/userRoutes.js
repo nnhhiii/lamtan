@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const cloudinary = require('../cloudinaryConfig'); // Import cấu hình Cloudinary
-const upload = require('../uploadConfig'); // Import cấu hình Multer
+const cloudinary = require('../upload/cloudinaryConfig'); // Import cấu hình Cloudinary
+const upload = require('../upload/uploadConfig'); // Import cấu hình Multer
 const bcrypt = require('bcryptjs');
+const checkToken = require('../checkToken');
 require('dotenv').config();
 
 // Lấy danh sách tất cả người dùng
@@ -97,8 +98,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 });
 
 // Cập nhật user
-router.patch('/', upload.single('image'), async (req, res) => {
-    if (!req.session.user) return res.status(401).json({ message: 'Chưa đăng nhập' });
+router.patch('/', checkToken, upload.single('image'), async (req, res) => {
     try {
         let imagePath = req.body.image; // Lấy URL từ request body
 
@@ -107,7 +107,7 @@ router.patch('/', upload.single('image'), async (req, res) => {
         }
 
         const updatedUser = await User.findByIdAndUpdate(
-            req.session.user._id,
+            req.user.id,
             {
                 ...req.body,
                 image: imagePath, // Cập nhật image mới từ Cloudinary

@@ -39,6 +39,7 @@ const OrderSchema = new mongoose.Schema({
     cancelledTimestamp: { type: Date },
 
     shippingAddress: { type: String, required: true },
+    shippingAddressDetail: { type: String, required: true },
     phoneNumber: { type: Number, required: true },
     note: { type: String },
     isReviewed: {

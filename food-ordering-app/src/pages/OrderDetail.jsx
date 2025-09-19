@@ -96,6 +96,9 @@ const OrderDetail = ({ showSnackbar }) => {
                     <strong>Địa chỉ giao hàng:</strong> {order.shippingAddress}
                 </Typography>
                 <Typography variant="body1">
+                    <strong>Địa chỉ cụ thể:</strong> {order.shippingAddressDetail}
+                </Typography>
+                <Typography variant="body1">
                     <strong>Ghi chú:</strong> {order.note || ""}
                 </Typography>
                 <Typography variant="body1">

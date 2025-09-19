@@ -18,8 +18,15 @@ const Login = ({ showSnackbar }) => {
       const res = await userLogin(data);
       showSnackbar(res.message, "success");
       navigate(ROUTES.HOME);
-    } catch (err) {
-      showSnackbar(err.response?.data?.message, "error");
+    } catch (error) {
+      if (error.response) {
+        // lỗi từ backend
+        showSnackbar(error.response?.data?.message, "error");
+      } else {
+        // lỗi do frontend tự throw
+        showSnackbar(error.message, "error");
+      }
+
     } finally {
       setLoading(false);
     }

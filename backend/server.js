@@ -7,10 +7,22 @@ const app = express();
 const session = require('express-session');
 const passport = require('passport');
 
+const allowedOrigins = [
+  process.env.FRONTEND_USER_URL,
+  process.env.FRONTEND_ADMIN_URL
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
@@ -37,7 +49,6 @@ app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/carts', require('./routes/cartRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/useradmins', require('./routes/userAdminRoutes'));
 app.use('/api/clients', require('./routes/clientRoutes'));
 app.use('/api/partners', require('./routes/partnerRoutes'));
 app.use('/api/posts', require('./routes/postRoutes'));

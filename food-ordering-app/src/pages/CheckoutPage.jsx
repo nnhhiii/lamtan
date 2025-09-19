@@ -59,7 +59,7 @@ const CheckoutPage = ({ userData, showSnackbar }) => {
       } else {
         navigate(`${ROUTES.ORDERSUCCESS}/${order._id}`);
       }
-      showSnackbar(order.message, "success");
+      showSnackbar("Đặt hàng thành công!", "success");
     } catch (err) {
       showSnackbar(err.response?.data?.message, "error");
     } finally {

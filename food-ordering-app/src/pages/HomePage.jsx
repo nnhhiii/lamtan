@@ -280,7 +280,7 @@ const Home = ({ aboutData }) => {
           </Box>
         </Box>
 
-        <Box sx={{ mt: 5, width: 1 }}>
+        <Box sx={{ mt: 5, width: 1}}>
           <PostFoodList />
         </Box>
 

@@ -16,7 +16,7 @@ const PostFoodList = () => {
       try {
         const categories = await getPostCategories();
         if (categories.length > 1) {
-          const secondCategoryId = categories[2]._id; // lấy category thứ 2
+          const secondCategoryId = categories[0]._id; // lấy category thứ 2
           const data = await getPostsByCategoryId(secondCategoryId);
           setPosts(data);
         }
@@ -34,7 +34,7 @@ const PostFoodList = () => {
     infinite: true,
     speed: 1000,
     autoplay: true,          // auto scroll
-    autoplaySpeed: 2000,     
+    autoplaySpeed: 2000,
     slidesToShow: 4,
     slidesToScroll: 1,
     arrows: false,
@@ -54,13 +54,16 @@ const PostFoodList = () => {
 
   return (
     <Box>
-      <Slider {...settings}>
-        {posts.slice(0, 7).map((post) => (
-          <Box key={post._id}>
-            <PostFoodItem post={post} />
-          </Box>
-        ))}
-      </Slider>
+      {posts.length > 0 && (
+        <Slider {...settings}>
+          {posts.slice(0, 7).map(post => (
+            <Box key={post._id} sx={{ px: 1 }}>
+              <PostFoodItem post={post} />
+            </Box>
+          ))}
+        </Slider>
+      )}
+
     </Box>
   );
 };

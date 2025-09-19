@@ -1,8 +1,8 @@
 const express = require('express');
 const Post = require('../models/Post');
 const router = express.Router();
-const upload = require('../uploadConfig');
-const cloudinary = require('../cloudinaryConfig');
+const upload = require('../upload/uploadConfig');
+const cloudinary = require('../upload/cloudinaryConfig');
 
 // Lấy danh sách bài viết (có category)
 router.get('/', async (req, res) => {

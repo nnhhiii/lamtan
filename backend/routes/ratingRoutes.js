@@ -3,8 +3,9 @@ const Rating = require('../models/Rating');
 const Product = require('../models/Product');
 const Order = require('../models/Order');
 const router = express.Router();
-const upload = require('../uploadConfig');
-const cloudinary = require('../cloudinaryConfig');
+const upload = require('../upload/uploadConfig');
+const cloudinary = require('../upload/cloudinaryConfig');
+const checkToken = require('../checkToken');
 
 // Lấy danh sách đánh giá với phân trang, sắp xếp
 router.get('/', async (req, res) => {
@@ -93,12 +94,9 @@ router.get('/product/:id', async (req, res) => {
 });
 
 // Tạo mới đánh giá
-router.post('/', upload.any(), async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
+router.post('/', checkToken,upload.any(), async (req, res) => {
     try {
-        const userId = req.session.user._id;
+        const userId = req.user.id;
         const { product, order } = req.body;
         // 1. Kiểm tra đơn hàng có tồn tại và thuộc về user không
         const foundOrder = await Order.findOne({ _id: order, user: userId }).populate("items.product");
